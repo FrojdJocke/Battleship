@@ -1,0 +1,22 @@
+﻿<Application x:Class="SinkMyBattleship_2._0.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:SinkMyBattleship_2._0">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <local:Bootstrapper x:Key="Bootstrapper" />
+
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="GridButton" TargetType="Button">
+                <Setter Property="Background" Value="LightBlue"></Setter>
+                <Setter Property="Foreground" Value="White"></Setter>
+            </Style>
+
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
