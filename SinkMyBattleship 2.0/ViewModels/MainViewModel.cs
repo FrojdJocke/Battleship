@@ -72,26 +72,38 @@ namespace SinkMyBattleship_2._0.ViewModels
             {
                 LastAction = "";
                 bool continuePlay = true;
-                if (!reader.ReadLine().StartsWith("210")) continuePlay = false;
-                Logger.AddToLog($"Ansluten till {client.Client.RemoteEndPoint}");
-                writer.WriteLine($"HELO {player.Name}");
-                Logger.AddToLog($"HELO {player.Name}");
-                if (!reader.ReadLine().StartsWith("220")) continuePlay = false;
-                writer.WriteLine("START");
-                Logger.AddToLog("START");
-                if (!reader.ReadLine().StartsWith("22") || reader.ReadLine().StartsWith("220")) continuePlay = false;
-
-               
                 var command = reader.ReadLine();
-                if(command.Split(' ')[0] == "221")
+                if (command != null && command.StartsWith("210"))
                 {
-                    player.PlayTurn = 1;
-                    Opponent.PlayTurn = 2;
+                    Logger.AddToLog($"Ansluten till {client.Client.RemoteEndPoint}");
+                    writer.WriteLine($"HELO {player.Name}");
+                    Logger.AddToLog($"HELO {player.Name}");
                 }
-                else
+                else{continuePlay = false;}
+
+                command = reader.ReadLine();
+                if (command != null && command.StartsWith("220"))
                 {
-                    player.PlayTurn = 2;
-                    Opponent.PlayTurn = 1;
+                    writer.WriteLine("START");
+                    Logger.AddToLog("START");
+                }
+                else {continuePlay = false;}
+                command = reader.ReadLine();
+                if (command == null || !command.StartsWith("22") || command.StartsWith("220")) continuePlay = false;
+
+
+                if (continuePlay)
+                {
+                    if(command.Split(' ')[0] == "221")
+                    {
+                        player.PlayTurn = 1;
+                        Opponent.PlayTurn = 2;
+                    }
+                    else
+                    {
+                        player.PlayTurn = 2;
+                        Opponent.PlayTurn = 1;
+                    }
                 }
                 while (client.Connected && continuePlay)
                 {
@@ -107,6 +119,7 @@ namespace SinkMyBattleship_2._0.ViewModels
                                     if (LastAction.ToUpper() == "QUIT")
                                     {
                                         Logger.AddToLog(StatusCode.ConnectionLost.GetDescription());
+                                        writer.WriteLine(StatusCode.ConnectionLost.GetDescription());
                                         continuePlay = false;
                                         break;
                                     }
@@ -115,13 +128,26 @@ namespace SinkMyBattleship_2._0.ViewModels
                                         writer.WriteLine(LastAction);
                                         //Spel logik
                                         var response = reader.ReadLine();
+                                        if (response == null || response.StartsWith("270"))
+                                        {
+                                            Logger.AddToLog(StatusCode.ConnectionLost.GetDescription());
+                                            continuePlay = false;
+                                            break;
+                                        }
                                         if (response.StartsWith("5"))
                                         {
                                             Logger.AddToLog(response);
                                             LastAction = "";
                                             continue;
                                         }
-                                        
+                                        if (response.StartsWith("260"))
+                                        {
+                                            Logger.AddToLog(StatusCode.YouWin.GetDescription());
+                                            continuePlay = false;
+                                            break;
+                                        }
+                                        Logger.AddToLog(response);
+
                                         LastAction = "";
                                         break;
                                     }                                    
@@ -138,23 +164,42 @@ namespace SinkMyBattleship_2._0.ViewModels
                             //Host logik
                             while (true)
                             {
-                                command = await reader.ReadLineAsync();
-                                if (command.StartsWith("260"))
+                                command = reader.ReadLine();
+                                if (command == null || command.StartsWith("270"))
                                 {
-                                    //WIN!
+                                    Logger.AddToLog(StatusCode.ConnectionLost.GetDescription());
+                                    continuePlay = false;
+                                    break;
                                 }
-                                if (command.StartsWith("270"))
+                                if(command.StartsWith("FIRE", StringComparison.InvariantCultureIgnoreCase) && FireSyntaxCheck(command))
                                 {
-                                    //ABORT!
-                                }                                
-                                else if(command.StartsWith("2"))
-                                {
-                                    Logger.AddToLog(command);
+                                    Logger.AddToLog($"Opponent: {command}");
+
+                                    var fireResponse = player.GetFiredAtMessage(command);
+
+                                    if (fireResponse.StartsWith("260"))
+                                    {
+                                        Logger.AddToLog("You Lost!");
+                                        writer.WriteLine(fireResponse);
+                                        continuePlay = false;
+                                        break;
+                                    }
+
+                                    if (fireResponse.StartsWith("230"))
+                                    {
+                                        Logger.AddToLog($"Opponent: {fireResponse}");
+                                        writer.WriteLine(fireResponse);
+                                        break;
+                                    }
+                                    Logger.AddToLog($"Opponent: {fireResponse}");
+                                    writer.WriteLine(fireResponse);
+
                                     break;
                                 }
                                 else
                                 {
-                                    Logger.AddToLog(command);
+                                    var syntax = SyntaxCheck(command);
+                                    StatusWriter(writer, syntax ? StatusCode.SequenceError : StatusCode.SyntaxError);
                                 }
                             }
                             
@@ -171,7 +216,6 @@ namespace SinkMyBattleship_2._0.ViewModels
 
             }
         }
-
 
         static void StartListen(int port)
         {
@@ -207,14 +251,15 @@ namespace SinkMyBattleship_2._0.ViewModels
                     StatusWriter(writer, StatusCode.Battleship);
                     Logger.AddToLog("210 BATTLESHIP/1.0");
 
-                    
+                    int errorCounter = 0;
                     var handshake = false;
                     var start = false;
                     bool continuePlay = true;
                     while (client.Connected && continuePlay)
                     {
-                        var command = "";                        
-                        //Hello
+                        
+                        var command = "";
+                        #region // Handshake
                         if (!handshake && continuePlay)
                         {
                             command = reader.ReadLine();
@@ -242,10 +287,22 @@ namespace SinkMyBattleship_2._0.ViewModels
                                 {
                                     StatusWriter(writer, StatusCode.SyntaxError);
                                 }
+                                errorCounter++;
+                                if (errorCounter == 3)
+                                {
+                                    continuePlay = false;
+                                    StatusWriter(writer, StatusCode.ConnectionLost);
+                                    Logger.AddToLog(StatusCode.ConnectionLost.GetDescription());
+                                    break;
+                                }
+                                continue;
                             }
                         }
+                        #endregion
+                        #region // Start
                         if(!start && handshake)
                         {
+                            errorCounter = 0;
                             command = reader.ReadLine();
                             if (command.Equals("QUIT", StringComparison.InvariantCultureIgnoreCase))
                             {
@@ -266,8 +323,20 @@ namespace SinkMyBattleship_2._0.ViewModels
                                 {
                                     StatusWriter(writer, StatusCode.SyntaxError);
                                 }
+
+                                errorCounter++;
+                                if (errorCounter == 3)
+                                {
+                                    continuePlay = false;
+                                    StatusWriter(writer, StatusCode.ConnectionLost);
+                                    Logger.AddToLog(StatusCode.ConnectionLost.GetDescription());
+                                    break;
+                                }
+                                continue;
+                                
                             }
                         }
+                        #endregion
 
                         //Set starter
                         var random = new Random();
@@ -290,6 +359,7 @@ namespace SinkMyBattleship_2._0.ViewModels
                         {
                             for (int i = 1; i < 3; i++)
                             {
+                                errorCounter = 0;
                                 if(player.PlayTurn == i)
                                 {
                                     // Wait for correct action from server
@@ -299,18 +369,20 @@ namespace SinkMyBattleship_2._0.ViewModels
                                         {
                                             if(LastAction.ToUpper() == "QUIT")
                                             {
+                                                StatusWriter(writer,StatusCode.ConnectionLost);
                                                 continuePlay = false;
                                                 break;
                                             }
                                             if (LastAction.StartsWith("270"))
                                             {
+                                                StatusWriter(writer, StatusCode.ConnectionLost);
                                                 continuePlay = false;
                                                 break;
                                             }
                                             if (LastAction.StartsWith("FIRE ",StringComparison.InvariantCultureIgnoreCase) && FireSyntaxCheck(LastAction))
                                             {
                                                 #region // Check if previously fired at
-                                                if (player.PrevCoors.Contains(LastAction.Split(' ')[1].ToUpper()))
+                                                if (player.CheckFiredAt(LastAction))
                                                 {
                                                     Logger.AddToLog(StatusCode.SequenceError.GetDescription());
                                                     LastAction = "";
@@ -322,92 +394,70 @@ namespace SinkMyBattleship_2._0.ViewModels
                                                 }
                                                 #endregion
 
-                                                writer.WriteLine(LastAction);
-                                                Logger.AddToLog(LastAction);
+                                                writer.WriteLine(LastAction); //Send Fire
+                                                Logger.AddToLog($"You: {LastAction}");
                                                 ///////Spel logik//////////////////////////////////////////////
                                                 bool hit = false;
-                                                int boatEnum = 0;
-                                                bool sunk = false;
-                                                #region // Check for hit
-                                                foreach (var boat in Opponent.Boats)
+                                                while (true)
                                                 {
-                                                    foreach (var coor in boat.Coordinates)
-                                                    {
-                                                        if(coor.Key == LastAction.Split(' ')[1].ToUpper())
+                                                var response = reader.ReadLine();
+                                                if (response == null)
+                                                {
+                                                    Logger.AddToLog(StatusCode.ConnectionLost.GetDescription());
+                                                    continuePlay = false;
+                                                    break;
+                                                }
+
+                                                if (!string.IsNullOrWhiteSpace(response))
+                                                {
+                                                    
+                                                        if (response.StartsWith("QUIT", StringComparison.InvariantCultureIgnoreCase) || 
+                                                            response.StartsWith("270"))
                                                         {
-                                                            sunk = true;
-                                                            boat.Coordinates[coor.Key] = true;
-                                                            foreach (var c in boat.Coordinates)
-                                                            {
-                                                                if(c.Value == false)
-                                                                {
-                                                                    sunk = false;
-                                                                }
-                                                            }
-                                                            if (sunk)
-                                                            {
-                                                                boat.Alive = false;
-                                                                if(Opponent.Boats.All(x => x.Alive == false))
-                                                                {
-                                                                    Logger.AddToLog(StatusCode.YouWin.GetDescription());
-                                                                    writer.WriteLine(StatusCode.ConnectionLost.GetDescription());
-                                                                }
-                                                                switch (boat.Name)
-                                                                {
-                                                                    case "Carrier":
-                                                                        boatEnum = 251;
-                                                                        break;
-                                                                    case "Battleship":
-                                                                        boatEnum = 252;
-                                                                        break;
-                                                                    case "Destroyer":
-                                                                        boatEnum = 253;
-                                                                        break;
-                                                                    case "Submarine":
-                                                                        boatEnum = 254;
-                                                                        break;
-                                                                    case "Patrol Boat":
-                                                                        boatEnum = 255;
-                                                                        break;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                switch (boat.Name)
-                                                                {
-                                                                    case "Carrier":
-                                                                        boatEnum = 241;
-                                                                        break;
-                                                                    case "Battleship":
-                                                                        boatEnum = 242;
-                                                                        break;
-                                                                    case "Destroyer":
-                                                                        boatEnum = 243;
-                                                                        break;
-                                                                    case "Submarine":
-                                                                        boatEnum = 244;
-                                                                        break;
-                                                                    case "Patrol Boat":
-                                                                        boatEnum = 245;
-                                                                        break;
-                                                                }
-                                                            }
-                                                             //Hit
-                                                            
-                                                            var myEnum = (StatusCode)boatEnum;
-                                                            writer.WriteLine(myEnum.GetDescription());
-                                                            Logger.AddToLog(myEnum.GetDescription());
+                                                            continuePlay = false;
+                                                            Logger.AddToLog(StatusCode.ConnectionLost.GetDescription());
+                                                            break;
+                                                        }
+                                                        if (response.StartsWith("260"))
+                                                        {
+                                                            Logger.AddToLog(StatusCode.YouWin.GetDescription());
+                                                            continuePlay = false;
+                                                            break;
+                                                        }
+                                                        if (response.StartsWith("230"))
+                                                        {
+                                                            errorCounter = 0;
+                                                            hit = false;
+                                                            break;
+                                                        }
+                                                        if (response.StartsWith("24") || response.StartsWith("25"))
+                                                        {
+                                                            Logger.AddToLog(response);
+                                                            errorCounter = 0;
                                                             hit = true;
                                                             break;
                                                         }
+                                                        else
+                                                        {
+                                                            var syntax = SyntaxCheck(response);
+                                                            StatusWriter(writer, syntax ? StatusCode.SequenceError : StatusCode.SyntaxError);
+                                                            errorCounter++;
+                                                            if (errorCounter == 3)
+                                                            {
+                                                                continuePlay = false;
+                                                                StatusWriter(writer, StatusCode.ConnectionLost);
+                                                                Logger.AddToLog(StatusCode.ConnectionLost.GetDescription());
+                                                                break;
+                                                            }
+                                                            continue;
+                                                        }
                                                     }
-                                                    if (hit || sunk) break;
-                                                }
-                                                #endregion
 
+                                                }
+                                                if (!continuePlay) break;
                                                 if (!hit)
                                                 {
-                                                    writer.WriteLine(StatusCode.Miss.GetDescription());
+                                                    //writer.WriteLine(StatusCode.Miss.GetDescription());
                                                     Logger.AddToLog(StatusCode.Miss.GetDescription());
                                                 }
                                                 ///////////////////////////////////////////////////////////////
@@ -417,19 +467,29 @@ namespace SinkMyBattleship_2._0.ViewModels
                                             }
                                             else
                                             {
-                                                var syntax = SyntaxCheck(command);
+                                                var syntax = SyntaxCheck(LastAction);
                                                 if (!FireSyntaxCheck(LastAction))
                                                 {
-                                                    StatusWriter(writer, StatusCode.SyntaxError);
+                                                    Logger.AddToLog(StatusCode.SyntaxError.GetDescription());
                                                 }
                                                 else if (syntax)
                                                 {
-                                                    StatusWriter(writer, StatusCode.SequenceError);
+                                                    Logger.AddToLog(StatusCode.SequenceError.GetDescription());
                                                 }
                                                 else
                                                 {
-                                                    StatusWriter(writer, StatusCode.SyntaxError);
+                                                    Logger.AddToLog(StatusCode.SyntaxError.GetDescription());
                                                 }
+
+                                                errorCounter++;
+                                                if (errorCounter == 3)
+                                                {
+                                                    continuePlay = false;
+                                                    StatusWriter(writer, StatusCode.ConnectionLost);
+                                                    Logger.AddToLog(StatusCode.ConnectionLost.GetDescription());
+                                                    break;
+                                                }
+                                                LastAction = "";
                                             }
                                         }
                                         else
@@ -444,7 +504,13 @@ namespace SinkMyBattleship_2._0.ViewModels
                                     while (true)
                                     {
                                         command = reader.ReadLine();
+                                        if (command == null)
+                                        {
+                                            Logger.AddToLog("Client Lost");
+                                            continuePlay = false;
+                                            break;
 
+                                        }
                                         if (!string.IsNullOrEmpty(command))
                                         {
                                             if (command.ToUpper() == "QUIT")
@@ -461,10 +527,18 @@ namespace SinkMyBattleship_2._0.ViewModels
                                             if (command.StartsWith("FIRE ", StringComparison.InvariantCultureIgnoreCase) && FireSyntaxCheck(command))
                                             {
                                                 #region // Check if previously fired at
-                                                if (Opponent.PrevCoors.Contains(command.Split(' ')[1].ToUpper()))
+                                                if (Opponent.CheckFiredAt(command))
                                                 {
-                                                    Logger.AddToLog($"Client: {StatusCode.SequenceError.GetDescription()}");
+                                                    //Logger.AddToLog($"Client: {StatusCode.SequenceError.GetDescription()}");
                                                     writer.WriteLine(StatusCode.SequenceError.GetDescription());
+                                                    errorCounter++;
+                                                    if (errorCounter == 3)
+                                                    {
+                                                        continuePlay = false;
+                                                        StatusWriter(writer, StatusCode.ConnectionLost);
+                                                        Logger.AddToLog(StatusCode.ConnectionLost.GetDescription());
+                                                        break;
+                                                    }
                                                     continue;
                                                 }
                                                 else
@@ -478,82 +552,98 @@ namespace SinkMyBattleship_2._0.ViewModels
                                                 bool hit = false;
                                                 int boatEnum = 0;
                                                 bool sunk = false;
-                                                #region // Check for hit
-                                                foreach (var boat in player.Boats)
-                                                {
-                                                    foreach (var coor in boat.Coordinates)
-                                                    {
-                                                        if (coor.Key == command.Split(' ')[1].ToUpper())
-                                                        {
-                                                            sunk = true;
-                                                            boat.Coordinates[coor.Key] = true;
-                                                            foreach (var c in boat.Coordinates)
-                                                            {
-                                                                if (c.Value == false)
-                                                                {
-                                                                    sunk = false;
-                                                                }
-                                                            }
-                                                            if (sunk)
-                                                            {
-                                                                boat.Alive = false;
-                                                                if (player.Boats.All(x => x.Alive == false))
-                                                                {
-                                                                    Logger.AddToLog($"Client: {StatusCode.YouWin.GetDescription()}");
-                                                                    writer.WriteLine(StatusCode.ConnectionLost.GetDescription());
-                                                                }
-                                                                switch (boat.Name)
-                                                                {
-                                                                    case "Carrier":
-                                                                        boatEnum = 251;
-                                                                        break;
-                                                                    case "Battleship":
-                                                                        boatEnum = 252;
-                                                                        break;
-                                                                    case "Destroyer":
-                                                                        boatEnum = 253;
-                                                                        break;
-                                                                    case "Submarine":
-                                                                        boatEnum = 254;
-                                                                        break;
-                                                                    case "Patrol Boat":
-                                                                        boatEnum = 255;
-                                                                        break;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                switch (boat.Name)
-                                                                {
-                                                                    case "Carrier":
-                                                                        boatEnum = 241;
-                                                                        break;
-                                                                    case "Battleship":
-                                                                        boatEnum = 242;
-                                                                        break;
-                                                                    case "Destroyer":
-                                                                        boatEnum = 243;
-                                                                        break;
-                                                                    case "Submarine":
-                                                                        boatEnum = 244;
-                                                                        break;
-                                                                    case "Patrol Boat":
-                                                                        boatEnum = 245;
-                                                                        break;
-                                                                }
-                                                            }
-                                                            //Hit
+                                                #region // Check for hit <OLD>
+                                                //foreach (var boat in player.Boats)
+                                                //{
+                                                //    foreach (var coor in boat.Coordinates)
+                                                //    {
+                                                //        if (coor.Key == command.Split(' ')[1].ToUpper())
+                                                //        {
+                                                //            sunk = true;
+                                                //            boat.Coordinates[coor.Key] = true;
+                                                //            foreach (var c in boat.Coordinates)
+                                                //            {
+                                                //                if (c.Value == false)
+                                                //                {
+                                                //                    sunk = false;
+                                                //                }
+                                                //            }
+                                                //            if (sunk)
+                                                //            {
+                                                //                boat.Alive = false;
+                                                //                if (player.Boats.All(x => x.Alive == false))
+                                                //                {
+                                                //                    Logger.AddToLog($"Client: {StatusCode.YouWin.GetDescription()}");
+                                                //                    writer.WriteLine(StatusCode.ConnectionLost.GetDescription());
+                                                //                }
+                                                //                switch (boat.Name)
+                                                //                {
+                                                //                    case "Carrier":
+                                                //                        boatEnum = 251;
+                                                //                        break;
+                                                //                    case "Battleship":
+                                                //                        boatEnum = 252;
+                                                //                        break;
+                                                //                    case "Destroyer":
+                                                //                        boatEnum = 253;
+                                                //                        break;
+                                                //                    case "Submarine":
+                                                //                        boatEnum = 254;
+                                                //                        break;
+                                                //                    case "Patrol Boat":
+                                                //                        boatEnum = 255;
+                                                //                        break;
+                                                //                }
+                                                //            }
+                                                //            else
+                                                //            {
+                                                //                switch (boat.Name)
+                                                //                {
+                                                //                    case "Carrier":
+                                                //                        boatEnum = 241;
+                                                //                        break;
+                                                //                    case "Battleship":
+                                                //                        boatEnum = 242;
+                                                //                        break;
+                                                //                    case "Destroyer":
+                                                //                        boatEnum = 243;
+                                                //                        break;
+                                                //                    case "Submarine":
+                                                //                        boatEnum = 244;
+                                                //                        break;
+                                                //                    case "Patrol Boat":
+                                                //                        boatEnum = 245;
+                                                //                        break;
+                                                //                }
+                                                //            }
+                                                //            //Hit
 
-                                                            var myEnum = (StatusCode)boatEnum;
-                                                            writer.WriteLine(myEnum.GetDescription());
-                                                            Logger.AddToLog(myEnum.GetDescription());
-                                                            hit = true;
-                                                            break;
-                                                        }
-                                                    }
-                                                    if (hit || sunk) break;
-                                                }
+                                                //            var myEnum = (StatusCode)boatEnum;
+                                                //            writer.WriteLine(myEnum.GetDescription());
+                                                //            Logger.AddToLog(myEnum.GetDescription());
+                                                //            hit = true;
+                                                //            break;
+                                                //        }
+                                                //    }
+                                                //    if (hit || sunk) break;
+                                                //}
                                                 #endregion
+
+                                                var fireResponse = player.GetFiredAtMessage(command);
+                                                if (fireResponse.StartsWith("260"))
+                                                {
+                                                    writer.WriteLine(fireResponse);
+                                                    Logger.AddToLog("You Lost");
+                                                    continuePlay = false;
+                                                    break;
+                                                }
+
+                                                if (!fireResponse.StartsWith("230"))
+                                                {
+                                                    hit = true;
+                                                    writer.WriteLine(fireResponse);
+                                                    Logger.AddToLog($"Client: {fireResponse}");
+                                                }
 
                                                 if (!hit)
                                                 {
@@ -580,6 +670,16 @@ namespace SinkMyBattleship_2._0.ViewModels
                                                 {
                                                     StatusWriter(writer, StatusCode.SyntaxError);
                                                 }
+
+                                                errorCounter++;
+                                                if (errorCounter == 3)
+                                                {
+                                                    continuePlay = false;
+                                                    StatusWriter(writer, StatusCode.ConnectionLost);
+                                                    Logger.AddToLog(StatusCode.ConnectionLost.GetDescription());
+                                                    break;
+                                                }
+                                                
                                             }
                                         }                                        
 
