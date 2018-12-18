@@ -26,7 +26,7 @@ namespace SinkMyBattleship_2._0.Utils
     }
     public enum StatusCode
     {
-        [Description("210 Battleship/1.0")]
+        [Description("210 BATTLESHIP/1.0")]
         Battleship = 210,
         [Description("221 Client Starts")]
         ClientStart = 221,

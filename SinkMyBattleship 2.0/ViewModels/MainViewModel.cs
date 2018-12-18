@@ -78,6 +78,8 @@ namespace SinkMyBattleship_2._0.ViewModels
 
         static TcpListener listener;
 
+        static TcpClient clientTcp;
+
         public string LastAction { get; set; }
 
         public string Action
@@ -118,17 +120,21 @@ namespace SinkMyBattleship_2._0.ViewModels
         {
             try
             {
+                //clientTcp = new TcpClient(player.Address, player.Port);
                 using (var client = new TcpClient(player.Address, player.Port))
+                //using(clientTcp)//
                 using (var networkStream = client.GetStream())
+                //using (var networkStream = clientTcp.GetStream())//
                 using (var reader = new StreamReader(networkStream, Encoding.UTF8))
                 using (var writer = new StreamWriter(networkStream, Encoding.UTF8) {AutoFlush = true})
                 {
+                    //clientTcp = client;
                     LastAction = "";
                     bool continuePlay = true;
                     var command = reader.ReadLine();
                     if (command != null && command.Equals("210 BATTLESHIP/1.0"))
                     {
-                        Logger.AddToLog($"Ansluten till {client.Client.RemoteEndPoint}");
+                        Logger.AddToLog($"Ansluten till {clientTcp.Client.RemoteEndPoint}");
                         writer.WriteLine($"HELO {player.Name}");
                         Logger.AddToLog($"HELO {player.Name}");
                     }
@@ -168,7 +174,7 @@ namespace SinkMyBattleship_2._0.ViewModels
                         }
                     }
 
-                    while (client.Connected && continuePlay)
+                    while (clientTcp.Connected && continuePlay)
                     {
                         for (int i = 1; i < 3; i++)
                         {
@@ -193,6 +199,7 @@ namespace SinkMyBattleship_2._0.ViewModels
                                             FireSyntaxCheck(LastAction))
                                         {
                                             writer.WriteLine(LastAction);
+                                            Opponent.Command = $"{LastAction} ";
                                             //Spel logik
                                             var response = reader.ReadLine();
                                             if (response == null || response.StartsWith("270"))
@@ -215,7 +222,8 @@ namespace SinkMyBattleship_2._0.ViewModels
                                                 continuePlay = false;
                                                 break;
                                             }
-
+                                            Opponent.Command += response;
+                                            Opponent.GetFiredAtForUI();
                                             Logger.AddToLog(response);
 
                                             LastAction = "";
@@ -294,9 +302,9 @@ namespace SinkMyBattleship_2._0.ViewModels
             {
                 Logger.AddToLog(StatusCode.ConnectionLost.GetDescription());
                 Logger.AddToLog("Press restart");
+                
             }
         }
-
 
         private async Task StartServer(Player player)
         {
@@ -313,6 +321,7 @@ namespace SinkMyBattleship_2._0.ViewModels
                 player.PrevCoors = new List<string>();
                 Player.ClearBoard();
                 Opponent.ClearBoard();
+                LastAction = "";
                 Logger.AddToLog("Väntar på att någon ska ansluta sig...");
                 try
                 {
@@ -489,7 +498,7 @@ namespace SinkMyBattleship_2._0.ViewModels
                                                     Opponent.Command = $"{LastAction} ";
                                                     Logger.AddToLog($"You: {LastAction}");
                                                     ///////Spel logik//////////////////////////////////////////////
-                                                    bool hit = false;
+                                                    //bool hit = false;
                                                     while (true)
                                                     {
                                                         var response = reader.ReadLine();
@@ -533,7 +542,7 @@ namespace SinkMyBattleship_2._0.ViewModels
                                                                 Opponent.GetFiredAtForUI();
                                                                 Logger.AddToLog(response);
                                                                 errorCounter = 0;
-                                                                hit = true;
+                                                                //hit = true;
                                                                 break;
                                                             }
                                                             else
@@ -822,7 +831,7 @@ If your opponent wins, write '260 <Message>'
         {
             try
             {
-                listener?.Stop();
+                listener?.Stop();                
                 Logger.ClearLog();
                 var manager = new WindowManager();
                 manager.ShowWindow(new ShellViewModel());
