@@ -56,7 +56,7 @@ namespace SinkMyBattleship_2._0.Utils
         PatrolBoatSunk = 255,
         [Description("260 You Win!")]
         YouWin = 260,
-        [Description("270 Bye bye")]
+        [Description("270 The other player chickened out")]
         ConnectionLost = 270,
         [Description("500 Syntax Error")]
         SyntaxError = 500,

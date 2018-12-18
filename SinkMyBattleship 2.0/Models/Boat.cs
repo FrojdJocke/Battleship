@@ -13,12 +13,16 @@ namespace SinkMyBattleship_2._0.Models
         public Dictionary<string,bool> Coordinates { get; set; } = new Dictionary<string, bool>();
 
         public bool Alive { get; set; }
+        public Position Position { get; set; }
 
         public Boat(string name, Dictionary<string,bool> coordinates)
         {
             Alive = true;
             Name = name;
             Coordinates = coordinates;
+
+            Position = new Position(Coordinates.First().Key, coordinates.Count);
+            Position.Horizontal = true;
         }
     }
 }

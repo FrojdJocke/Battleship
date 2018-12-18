@@ -98,6 +98,7 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="UIAutomationProvider" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -112,10 +113,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Converters\FireConverter.cs" />
     <Compile Include="Integration\TextBoxBehavoiur.cs" />
+    <Compile Include="Models\Board.cs" />
     <Compile Include="Models\Boat.cs" />
     <Compile Include="Models\Logger.cs" />
     <Compile Include="Models\Player.cs" />
+    <Compile Include="Models\Position.cs" />
     <Compile Include="Utils\Enum.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />

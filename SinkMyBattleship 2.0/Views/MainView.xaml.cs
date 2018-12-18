@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
+using System.Windows.Automation.Provider;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -22,6 +24,16 @@ namespace SinkMyBattleship_2._0.Views
         public MainView()
         {
             InitializeComponent();
+        }
+
+        private void SendAction_Click(object sender, RoutedEventArgs e)
+        {
+            var obj = sender as Button;
+            //obj.Background = Brushes.White;
+            Action.Text = $"FIRE {obj.Content}";
+            var peer = new ButtonAutomationPeer(SendAction);
+            var invokeProv = peer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
+            invokeProv.Invoke();
         }
     }
 }

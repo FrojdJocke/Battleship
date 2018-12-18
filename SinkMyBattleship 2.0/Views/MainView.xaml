@@ -5,8 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SinkMyBattleship_2._0.Views"
         xmlns:src="clr-namespace:SinkMyBattleship_2._0.Integration"
+        xmlns:l="clr-namespace:SinkMyBattleship_2._0.Converters"
         mc:Ignorable="d"
         Title="MainView" Height="600" Width="800" Background="LightGray" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <l:FireConverter x:Key="ConvertBackgroundColor" />
+    </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
@@ -16,7 +20,7 @@
             </MenuItem>
         </Menu>
 
-        <Grid>
+        <Grid x:Name="GridLayout">
             <Grid.RowDefinitions >
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="30"/>
@@ -97,19 +101,1266 @@
             <Label Grid.Row="9" Grid.Column="0" Content="I"></Label>
             <Label Grid.Row="10" Grid.Column="0" Content="J"></Label>
 
-            <Button Grid.Column="1" Grid.Row="1" Content="A1" Style="{StaticResource GridButton}"></Button>
-            <Button Grid.Column="2" Grid.Row="1" Content="B1" Style="{StaticResource GridButton}"></Button>
-            <Button Grid.Column="3" Grid.Row="1" Content="C1" Style="{StaticResource GridButton}"></Button>
-            <Button Grid.Column="4" Grid.Row="1" Content="D1" Style="{StaticResource GridButton}"></Button>
-
             <Label Grid.Column="1" Grid.Row="12" Grid.ColumnSpan="2" Content="Action:"></Label>
             <TextBox x:Name="Action" Grid.Column="3" Grid.Row="12" Grid.ColumnSpan="5"></TextBox>
             <Button x:Name="SendAction" Grid.Column="8" Grid.Row="12" Content="Send"></Button>
 
-            <ScrollViewer Grid.Column="1" Grid.ColumnSpan="8" Grid.Row="13" Grid.RowSpan="10" Background="White">
+            <Label x:Name="TriggerLabel"></Label>
+            <Button x:Name="RestartServer" Grid.Column="12" Grid.Row="12" Grid.ColumnSpan="3" Content="Restart Server"></Button>
+
+            <ScrollViewer Grid.Column="1" Grid.ColumnSpan="15" Grid.Row="13" Grid.RowSpan="10" Background="White">
                 <TextBox src:TextBoxBehaviour.ScrollOnTextChanged="True" VerticalScrollBarVisibility="Auto" 
                          IsEnabled="False" Text="{Binding Logger.Log}"></TextBox>
             </ScrollViewer>
+
+            <Border Grid.ColumnSpan="{Binding Boat1.Position.ColumnSpan}" 
+                    Grid.Row="{Binding Boat1.Position.Row}" 
+                    Grid.Column="{Binding Boat1.Position.Column}" 
+                    Grid.RowSpan="{Binding Boat1.Position.RowSpan}" 
+                    Background="DarkBlue" Opacity="0.5"/>
+
+            <Border Grid.ColumnSpan="{Binding Boat2.Position.ColumnSpan}" 
+                    Grid.Row="{Binding Boat2.Position.Row}" 
+                    Grid.Column="{Binding Boat2.Position.Column}" 
+                    Grid.RowSpan="{Binding Boat2.Position.RowSpan}" 
+                    Background="Orange" Opacity="0.5"/>
+
+            <Border Grid.ColumnSpan="{Binding Boat3.Position.ColumnSpan}" 
+                    Grid.Row="{Binding Boat3.Position.Row}" 
+                    Grid.Column="{Binding Boat3.Position.Column}" 
+                    Grid.RowSpan="{Binding Boat3.Position.RowSpan}" 
+                    Background="Orange" Opacity="0.5"/>
+
+            <Border Grid.ColumnSpan="{Binding Boat4.Position.ColumnSpan}" 
+                    Grid.Row="{Binding Boat4.Position.Row}" 
+                    Grid.Column="{Binding Boat4.Position.Column}" 
+                    Grid.RowSpan="{Binding Boat4.Position.RowSpan}" 
+                    Background="Green" Opacity="0.5"/>
+
+            <Border Grid.ColumnSpan="{Binding Boat5.Position.ColumnSpan}" 
+                    Grid.Row="{Binding Boat5.Position.Row}" 
+                    Grid.Column="{Binding Boat5.Position.Column}" 
+                    Grid.RowSpan="{Binding Boat5.Position.RowSpan}" 
+                    Background="Yellow" Opacity="0.5"/>
+
+            <!--ocean-->
+            <!--A-->
+            <Button Grid.Column="12" Grid.Row="1" Content="A1" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A1}">
+            </Button>
+
+            <Button Grid.Column="13" Grid.Row="1" Content="A2" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A2}">
+            </Button>
+
+            <Button Grid.Column="14" Grid.Row="1" Content="A3" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A3}">
+            </Button>
+
+            <Button Grid.Column="15" Grid.Row="1" Content="A4" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A4}">
+            </Button>
+
+            <Button Grid.Column="16" Grid.Row="1" Content="A5" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A5}">
+            </Button>
+
+            <Button Grid.Column="17" Grid.Row="1" Content="A6" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A6}">
+            </Button>
+
+            <Button Grid.Column="18" Grid.Row="1" Content="A7" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A7}">
+            </Button>
+
+            <Button Grid.Column="19" Grid.Row="1" Content="A8" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A8}">
+            </Button>
+
+            <Button Grid.Column="20" Grid.Row="1" Content="A9" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A9}">
+            </Button>
+
+            <Button Grid.Column="21" Grid.Row="1" Content="A10" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A10}">
+            </Button>
+
+            <!--B-->
+
+            <Button Grid.Column="12" Grid.Row="2" Content="B1" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B1}">
+            </Button>
+
+            <Button Grid.Column="13" Grid.Row="2" Content="B2" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B2}">
+            </Button>
+
+            <Button Grid.Column="14" Grid.Row="2" Content="B3" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B3}">
+            </Button>
+
+            <Button Grid.Column="15" Grid.Row="2" Content="B4" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B4}">
+            </Button>
+
+            <Button Grid.Column="16" Grid.Row="2" Content="B5" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B5}">
+            </Button>
+
+            <Button Grid.Column="17" Grid.Row="2" Content="B6" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B6}">
+            </Button>
+
+            <Button Grid.Column="18" Grid.Row="2" Content="B7" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B7}">
+            </Button>
+
+            <Button Grid.Column="19" Grid.Row="2" Content="B8" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B8}">
+            </Button>
+
+            <Button Grid.Column="20" Grid.Row="2" Content="B9" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B9}">
+            </Button>
+
+            <Button Grid.Column="21" Grid.Row="2" Content="B10" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B10}">
+            </Button>
+
+            <!--C-->
+
+            <Button Grid.Column="12" Grid.Row="3" Content="C1" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C1}">
+            </Button>
+
+            <Button Grid.Column="13" Grid.Row="3" Content="C2" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C2}">
+            </Button>
+
+            <Button Grid.Column="14" Grid.Row="3" Content="C3" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C3}">
+            </Button>
+
+            <Button Grid.Column="15" Grid.Row="3" Content="C4" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C4}">
+            </Button>
+
+            <Button Grid.Column="16" Grid.Row="3" Content="C5" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C5}">
+            </Button>
+
+            <Button Grid.Column="17" Grid.Row="3" Content="C6" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C6}">
+            </Button>
+
+            <Button Grid.Column="18" Grid.Row="3" Content="C7" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C7}">
+            </Button>
+
+            <Button Grid.Column="19" Grid.Row="3" Content="C8" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C8}">
+            </Button>
+
+            <Button Grid.Column="20" Grid.Row="3" Content="C9" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C9}">
+            </Button>
+
+            <Button Grid.Column="21" Grid.Row="3" Content="C10" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C10}">
+            </Button>
+
+            <!--D-->
+            <Button Grid.Column="12" Grid.Row="4" Content="D1" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D1}">
+            </Button>
+
+            <Button Grid.Column="13" Grid.Row="4" Content="D2" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D2}">
+            </Button>
+
+            <Button Grid.Column="14" Grid.Row="4" Content="D3" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D3}">
+            </Button>
+
+            <Button Grid.Column="15" Grid.Row="4" Content="D4" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D4}">
+            </Button>
+
+            <Button Grid.Column="16" Grid.Row="4" Content="D5" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D5}">
+            </Button>
+
+            <Button Grid.Column="17" Grid.Row="4" Content="D6" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D6}">
+            </Button>
+
+            <Button Grid.Column="18" Grid.Row="4" Content="D7" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D7}">
+            </Button>
+
+            <Button Grid.Column="19" Grid.Row="4" Content="D8" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D8}">
+            </Button>
+
+            <Button Grid.Column="20" Grid.Row="4" Content="D9" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D9}">
+            </Button>
+
+            <Button Grid.Column="21" Grid.Row="4" Content="D10" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D10}">
+            </Button>
+
+            <!--E-->
+            <Button Grid.Column="12" Grid.Row="5" Content="E1" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E1}">
+            </Button>
+
+            <Button Grid.Column="13" Grid.Row="5" Content="E2" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E2}">
+            </Button>
+
+            <Button Grid.Column="14" Grid.Row="5" Content="E3" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E3}">
+            </Button>
+
+            <Button Grid.Column="15" Grid.Row="5" Content="E4" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E4}">
+            </Button>
+
+            <Button Grid.Column="16" Grid.Row="5" Content="E5" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E5}">
+            </Button>
+
+            <Button Grid.Column="17" Grid.Row="5" Content="E6" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E6}">
+            </Button>
+
+            <Button Grid.Column="18" Grid.Row="5" Content="E7" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E7}">
+            </Button>
+
+            <Button Grid.Column="19" Grid.Row="5" Content="E8" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E8}">
+            </Button>
+
+            <Button Grid.Column="20" Grid.Row="5" Content="E9" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E9}">
+            </Button>
+
+            <Button Grid.Column="21" Grid.Row="5" Content="E10" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E10}">
+            </Button>
+
+            <!--F-->
+            <Button Grid.Column="12" Grid.Row="6" Content="F1" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F1}">
+            </Button>
+
+            <Button Grid.Column="13" Grid.Row="6" Content="F2" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F2}">
+            </Button>
+
+            <Button Grid.Column="14" Grid.Row="6" Content="F3" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F3}">
+            </Button>
+
+            <Button Grid.Column="15" Grid.Row="6" Content="F4" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F4}">
+            </Button>
+
+            <Button Grid.Column="16" Grid.Row="6" Content="F5" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F5}">
+            </Button>
+
+            <Button Grid.Column="17" Grid.Row="6" Content="F6" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F6}">
+            </Button>
+
+            <Button Grid.Column="18" Grid.Row="6" Content="F7" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F7}">
+            </Button>
+
+            <Button Grid.Column="19" Grid.Row="6" Content="F8" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F8}">
+            </Button>
+
+            <Button Grid.Column="20" Grid.Row="6" Content="F9" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F9}">
+            </Button>
+
+            <Button Grid.Column="21" Grid.Row="6" Content="F10" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F10}">
+            </Button>
+            <!--G-->
+            <Button Grid.Column="12" Grid.Row="7" Content="G1" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G1}">
+            </Button>
+
+            <Button Grid.Column="13" Grid.Row="7" Content="G2" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G2}">
+            </Button>
+
+            <Button Grid.Column="14" Grid.Row="7" Content="G3" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G3}">
+            </Button>
+
+            <Button Grid.Column="15" Grid.Row="7" Content="G4" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G4}">
+            </Button>
+
+            <Button Grid.Column="16" Grid.Row="7" Content="G5" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G5}">
+            </Button>
+
+            <Button Grid.Column="17" Grid.Row="7" Content="G6" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G6}">
+            </Button>
+
+            <Button Grid.Column="18" Grid.Row="7" Content="G7" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G7}">
+            </Button>
+
+            <Button Grid.Column="19" Grid.Row="7" Content="G8" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G8}">
+            </Button>
+
+            <Button Grid.Column="20" Grid.Row="7" Content="G9" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G9}">
+            </Button>
+
+            <Button Grid.Column="21" Grid.Row="7" Content="G10" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G10}">
+            </Button>
+            <!--H-->
+            <Button Grid.Column="12" Grid.Row="8" Content="H1" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H1}">
+            </Button>
+
+            <Button Grid.Column="13" Grid.Row="8" Content="H2" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H2}">
+            </Button>
+
+            <Button Grid.Column="14" Grid.Row="8" Content="H3" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H3}">
+            </Button>
+
+            <Button Grid.Column="15" Grid.Row="8" Content="H4" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H4}">
+            </Button>
+
+            <Button Grid.Column="16" Grid.Row="8" Content="H5" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H5}">
+            </Button>
+
+            <Button Grid.Column="17" Grid.Row="8" Content="H6" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H6}">
+            </Button>
+
+            <Button Grid.Column="18" Grid.Row="8" Content="H7" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H7}">
+            </Button>
+
+            <Button Grid.Column="19" Grid.Row="8" Content="H8" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H8}">
+            </Button>
+
+            <Button Grid.Column="20" Grid.Row="8" Content="H9" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H9}">
+            </Button>
+
+            <Button Grid.Column="21" Grid.Row="8" Content="H10" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H10}">
+            </Button>
+            <!--I-->
+            <Button Grid.Column="12" Grid.Row="9" Content="I1" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I1}">
+            </Button>
+
+            <Button Grid.Column="13" Grid.Row="9" Content="I2" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I2}">
+            </Button>
+
+            <Button Grid.Column="14" Grid.Row="9" Content="I3" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I3}">
+            </Button>
+
+            <Button Grid.Column="15" Grid.Row="9" Content="I4" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I4}">
+            </Button>
+
+            <Button Grid.Column="16" Grid.Row="9" Content="I5" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I5}">
+            </Button>
+
+            <Button Grid.Column="17" Grid.Row="9" Content="I6" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I6}">
+            </Button>
+
+            <Button Grid.Column="18" Grid.Row="9" Content="I7" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I7}">
+            </Button>
+
+            <Button Grid.Column="19" Grid.Row="9" Content="I8" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I8}">
+            </Button>
+
+            <Button Grid.Column="20" Grid.Row="9" Content="I9" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I9}">
+            </Button>
+
+            <Button Grid.Column="21" Grid.Row="9" Content="I10" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I10}">
+            </Button>
+            <!--J-->
+            <Button Grid.Column="12" Grid.Row="10" Content="J1" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J1}">
+            </Button>
+
+            <Button Grid.Column="13" Grid.Row="10" Content="J2" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J2}">
+            </Button>
+
+            <Button Grid.Column="14" Grid.Row="10" Content="J3" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J3}">
+            </Button>
+
+            <Button Grid.Column="15" Grid.Row="10" Content="J4" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J10}">
+            </Button>
+
+            <Button Grid.Column="16" Grid.Row="10" Content="J5" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J5}">
+            </Button>
+
+            <Button Grid.Column="17" Grid.Row="10" Content="J6" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J6}">
+            </Button>
+
+            <Button Grid.Column="18" Grid.Row="10" Content="J7" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J7}">
+            </Button>
+
+            <Button Grid.Column="19" Grid.Row="10" Content="J8" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J8}">
+            </Button>
+
+            <Button Grid.Column="20" Grid.Row="10" Content="J9" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J9}">
+            </Button>
+
+            <Button Grid.Column="21" Grid.Row="10" Content="J10" Opacity="0.7"
+                    Background="{Binding Player.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J10}" >
+            </Button>
+
+            <!--TARGET-->
+            <!--A-->
+            <Button Grid.Column="1" Grid.Row="1" Content="A1"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A1}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="2" Grid.Row="1" Content="A2"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A2}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="3" Grid.Row="1" Content="A3"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A3}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="4" Grid.Row="1" Content="A4"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A4}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="5" Grid.Row="1" Content="A5"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A5}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="6" Grid.Row="1" Content="A6"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A6}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="7" Grid.Row="1" Content="A7"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A7}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="8" Grid.Row="1" Content="A8"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A8}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="9" Grid.Row="1" Content="A9"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A9}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="10" Grid.Row="1" Content="A10"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=A10}"  Click="SendAction_Click">
+            </Button>
+
+            <!--B-->
+
+            <Button Grid.Column="1" Grid.Row="2" Content="B1"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B1}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="2" Grid.Row="2" Content="B2"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B2}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="3" Grid.Row="2" Content="B3"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B3}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="4" Grid.Row="2" Content="B4"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B4}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="5" Grid.Row="2" Content="B5"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B5}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="6" Grid.Row="2" Content="B6"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B6}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="7" Grid.Row="2" Content="B7"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B7}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="8" Grid.Row="2" Content="B8"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B8}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="9" Grid.Row="2" Content="B9"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B9}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="10" Grid.Row="2" Content="B10"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=B10}"  Click="SendAction_Click">
+            </Button>
+
+            <!--C-->
+
+            <Button Grid.Column="1" Grid.Row="3" Content="C1"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C1}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="2" Grid.Row="3" Content="C2"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C2}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="3" Grid.Row="3" Content="C3"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C3}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="4" Grid.Row="3" Content="C4"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C4}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="5" Grid.Row="3" Content="C5"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C5}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="6" Grid.Row="3" Content="C6"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C6}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="7" Grid.Row="3" Content="C7"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C7}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="8" Grid.Row="3" Content="C8"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C8}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="9" Grid.Row="3" Content="C9"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C9}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="10" Grid.Row="3" Content="C10"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=C10}"  Click="SendAction_Click">
+            </Button>
+
+            <!--D-->
+            <Button Grid.Column="1" Grid.Row="4" Content="D1"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D1}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="2" Grid.Row="4" Content="D2"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D2}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="3" Grid.Row="4" Content="D3"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D3}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="4" Grid.Row="4" Content="D4"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D4}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="5" Grid.Row="4" Content="D5"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D5}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="6" Grid.Row="4" Content="D6"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D6}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="7" Grid.Row="4" Content="D7"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D7}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="8" Grid.Row="4" Content="D8"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D8}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="9" Grid.Row="4" Content="D9"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D9}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="10" Grid.Row="4" Content="D10"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=D10}"  Click="SendAction_Click">
+            </Button>
+
+            <!--E-->
+            <Button Grid.Column="1" Grid.Row="5" Content="E1"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E1}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="2" Grid.Row="5" Content="E2"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E2}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="3" Grid.Row="5" Content="E3"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E3}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="4" Grid.Row="5" Content="E4"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E4}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="5" Grid.Row="5" Content="E5"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E5}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="6" Grid.Row="5" Content="E6"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E6}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="7" Grid.Row="5" Content="E7"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E7}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="8" Grid.Row="5" Content="E8"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E8}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="9" Grid.Row="5" Content="E9"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E9}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="10" Grid.Row="5" Content="E10"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=E10}"  Click="SendAction_Click">
+            </Button>
+
+            <!--F-->
+            <Button Grid.Column="1" Grid.Row="6" Content="F1"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F1}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="2" Grid.Row="6" Content="F2"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F2}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="3" Grid.Row="6" Content="F3"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F3}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="4" Grid.Row="6" Content="F4"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F4}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="5" Grid.Row="6" Content="F5"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F5}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="6" Grid.Row="6" Content="F6"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F6}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="7" Grid.Row="6" Content="F7"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F7}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="8" Grid.Row="6" Content="F8"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F8}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="9" Grid.Row="6" Content="F9"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F9}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="10" Grid.Row="6" Content="F10"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=F10}"  Click="SendAction_Click">
+            </Button>
+            <!--G-->
+            <Button Grid.Column="1" Grid.Row="7" Content="G1"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G1}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="2" Grid.Row="7" Content="G2"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G2}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="3" Grid.Row="7" Content="G3"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G3}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="4" Grid.Row="7" Content="G4"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G4}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="5" Grid.Row="7" Content="G5"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G5}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="6" Grid.Row="7" Content="G6"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G6}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="7" Grid.Row="7" Content="G7"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G7}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="8" Grid.Row="7" Content="G8"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G8}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="9" Grid.Row="7" Content="G9"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G9}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="10" Grid.Row="7" Content="G10"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=G10}"  Click="SendAction_Click">
+            </Button>
+            <!--H-->
+            <Button Grid.Column="1" Grid.Row="8" Content="H1"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H1}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="2" Grid.Row="8" Content="H2"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H2}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="3" Grid.Row="8" Content="H3"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H3}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="4" Grid.Row="8" Content="H4"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H4}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="5" Grid.Row="8" Content="H5"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H5}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="6" Grid.Row="8" Content="H6"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H6}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="7" Grid.Row="8" Content="H7"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H7}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="8" Grid.Row="8" Content="H8"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H8}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="9" Grid.Row="8" Content="H9"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H9}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="10" Grid.Row="8" Content="H10"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=H10}"  Click="SendAction_Click">
+            </Button>
+            <!--I-->
+            <Button Grid.Column="1" Grid.Row="9" Content="I1"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I1}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="2" Grid.Row="9" Content="I2"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I2}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="3" Grid.Row="9" Content="I3"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I3}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="4" Grid.Row="9" Content="I4"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I4}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="5" Grid.Row="9" Content="I5"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I5}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="6" Grid.Row="9" Content="I6"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I6}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="7" Grid.Row="9" Content="I7"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I7}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="8" Grid.Row="9" Content="I8"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I8}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="9" Grid.Row="9" Content="I9"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I9}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="10" Grid.Row="9" Content="I10"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=I10}"  Click="SendAction_Click">
+            </Button>
+            <!--J-->
+            <Button Grid.Column="1" Grid.Row="10" Content="J1"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J1}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="2" Grid.Row="10" Content="J2"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J2}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="3" Grid.Row="10" Content="J3"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J3}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="4" Grid.Row="10" Content="J4"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J10}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="5" Grid.Row="10" Content="J5"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J5}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="6" Grid.Row="10" Content="J6"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J6}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="7" Grid.Row="10" Content="J7"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J7}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="8" Grid.Row="10" Content="J8"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J8}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="9" Grid.Row="10" Content="J9"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J9}"  Click="SendAction_Click">
+            </Button>
+
+            <Button Grid.Column="10" Grid.Row="10" Content="J10"
+                    Background="{Binding Opponent.OceanBoard.Coor, 
+                UpdateSourceTrigger=PropertyChanged, 
+                Converter={StaticResource ConvertBackgroundColor}, ConverterParameter=J10}"  Click="SendAction_Click">
+            </Button>
+
 
         </Grid>
     </DockPanel>

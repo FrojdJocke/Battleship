@@ -15,6 +15,9 @@ namespace SinkMyBattleship_2._0.Models
 
         public int Port { get; set; }
 
+        public Board OceanBoard { get; set; } = new Board();
+
+        public string Command { get; set; }
         public List<Boat> Boats { get; set; } = new List<Boat>();
         public int PlayTurn { get; set; }
         public List<string> PrevCoors { get; set; } = new List<string>();
@@ -46,12 +49,45 @@ namespace SinkMyBattleship_2._0.Models
                     if (coor.Key == input)
                     {
                         boat.Coordinates[coor.Key] = true;
+                        OceanBoard.Coor[input] = 1;
+                        var coord = new Dictionary<string, int>();
+                        coord = OceanBoard.Coor;
+                        OceanBoard.Coor = coord;
                         return true;
                     }
                 }
             }
 
+            OceanBoard.Coor[input] = 2;
+            var coorde = new Dictionary<string, int>();
+            coorde = OceanBoard.Coor;
+            OceanBoard.Coor = coorde;
+
             return false;
+        }
+        public void GetFiredAtForUI()
+        {
+            var nr = 0;
+            var split = Command.Split(' ');
+            if (split[2].StartsWith("230"))
+            {
+                nr = 2;
+            }
+            else
+            {
+                nr = 1;
+            }
+
+            OceanBoard.Coor[split[1]] = nr;
+            var coord = new Dictionary<string, int>();
+            coord = OceanBoard.Coor;
+            OceanBoard.Coor = coord;
+        }
+
+        public void ClearBoard()
+        {
+            OceanBoard.Coor = new Dictionary<string, int>();
+            OceanBoard.InitBoard();
         }
 
         public string GetFiredAtMessage(string input)
